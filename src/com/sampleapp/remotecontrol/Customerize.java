@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
@@ -18,11 +19,15 @@ import android.widget.ToggleButton;
 
 public class Customerize extends Activity {
 	Spinner prstnames;
+	Button btsave, btload, btdelete;
+	EditText etpname;
+
 	String[] prstList;
-	String result = "";
+	String[] modSeqn1;
+	String pr = "", sq = "";
 	SQLiteDatabase ourDatabase;
 	SharedPreferences sh;
-	int colnum,n;
+	int colnum, n, i;
 	CreateDb entry;
 	static int x[] = new int[999];
 	int y = 0;
@@ -32,13 +37,16 @@ public class Customerize extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.customerizer);
-		sh = getSharedPreferences("myprefes", 0);
+		init();
+		getPrstList();
+		setListerners();
+
 		n = sh.getInt("size", 0);
 		final LinearLayout space = (LinearLayout) findViewById(R.id.space);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-		for (int i = 0; i < 5; i++) {
+		for (i = 0; i < n; i++) {
 			TextView lable = new TextView(this);
 			lable.setText("Module name");
 			space.addView(lable);
@@ -74,28 +82,45 @@ public class Customerize extends Activity {
 			space.addView(panel);
 		}
 
-		getPrstList();
-
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 				Customerize.this, android.R.layout.simple_spinner_item,
 				prstList);
-		prstnames = (Spinner) findViewById(R.id.spinner1);
+
 		prstnames.setAdapter(adapter);
 
 	}
 
+	private void setListerners() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void init() {
+
+		sh = getSharedPreferences("myprefes", 0);
+		btsave = (Button) findViewById(R.id.btsave);
+		btload = (Button) findViewById(R.id.btload);
+		btdelete = (Button) findViewById(R.id.btdelete);
+		prstnames = (Spinner) findViewById(R.id.spinner1);
+		entry = new CreateDb(this);
+	}
+
 	private void getPrstList() {
 		// TODO Auto-generated method stub
-		entry = new CreateDb(this);
+
 		ourDatabase = entry.openSp();
-		String[] columns = new String[] { "_id", "prstname" };
+		String[] columns = new String[] { "_id", "prstname", "seqn" };
 		Cursor c = ourDatabase.query(CreateDb.DATABASE_TABLE3, columns, null,
 				null, null, null, null);
 		colnum = c.getColumnIndex("prstname");
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			result = result + c.getString(colnum) + ":";
+			pr = pr + c.getString(colnum) + ":";
+			sq = sq + c.getString(c.getColumnIndex("seqn")) + ".";
 		}
-		prstList = result.split(":");
-		ourDatabase.close();
+
+		prstList = pr.split(":");
+		modSeqn1 = sq.split(".");
+
+		// ourDatabase.close();
 	}
 }

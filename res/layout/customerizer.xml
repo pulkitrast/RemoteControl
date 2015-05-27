@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="1"> >
+        android:layout_weight="1"> 
 
         <Spinner
             android:id="@+id/spinner1"
@@ -47,38 +47,48 @@
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/etpname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10" >
+            android:ems="10"
+            android:enabled="false"
+            android:focusable="false"
+            >
 
-            <requestFocus android:layout_width="wrap_content" />
+            
         </EditText>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center" >
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/btnew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New" />
+
+            <Button
+                android:id="@+id/btsave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="true"
                 android:text="Save" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/btload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Load" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/btdelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Delete" />
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

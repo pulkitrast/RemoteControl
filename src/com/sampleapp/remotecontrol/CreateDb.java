@@ -37,8 +37,8 @@ public class CreateDb {
 					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, preset INTEGER,swstate INTEGER, mode TEXT )");
 			db.execSQL("Create table "
 					+ DATABASE_TABLE3
-					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, prstname TEXT)");
-			db.execSQL("INSERT INTO " + DATABASE_TABLE3+"(prstname) VALUES ('default')");
+					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, prstname TEXT,seqn TEXT)");
+			db.execSQL("INSERT INTO " + DATABASE_TABLE3+"(prstname,seqn) VALUES ('default','1,2,3,4,5')");
 		}
 
 		@Override
