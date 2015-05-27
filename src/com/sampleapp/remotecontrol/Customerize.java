@@ -21,7 +21,8 @@ public class Customerize extends Activity {
 	String[] prstList;
 	String result = "";
 	SQLiteDatabase ourDatabase;
-	int colnum;
+	SharedPreferences sh;
+	int colnum,n;
 	CreateDb entry;
 	static int x[] = new int[999];
 	int y = 0;
@@ -31,15 +32,16 @@ public class Customerize extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.customerizer);
+		sh = getSharedPreferences("myprefes", 0);
+		n = sh.getInt("size", 0);
 		final LinearLayout space = (LinearLayout) findViewById(R.id.space);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-	
+
 		for (int i = 0; i < 5; i++) {
 			TextView lable = new TextView(this);
 			lable.setText("Module name");
 			space.addView(lable);
-			
 
 			LinearLayout panel = new LinearLayout(this);
 			panel.setOrientation(LinearLayout.HORIZONTAL);
@@ -50,25 +52,26 @@ public class Customerize extends Activity {
 				x[y++] = -1;
 				final ToggleButton tb = new ToggleButton(this);
 				tb.setId(y);
-				tb.setText("sw"+ y);
-				tb.setTextOff("sw"+ y);
-				tb.setTextOn("sw"+ y);
+				tb.setText("sw" + y);
+				tb.setTextOff("sw" + y);
+				tb.setTextOn("sw" + y);
 				tb.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-button.requestFocus();generated method stub
-					
-						if(tb.isChecked()) x[tb.getId()]=1;
-					
+
+						if (tb.isChecked())
+							x[tb.getId()] = 1;
+
 					}
 				}
 
 				);
-				
-panel.addView(tb);
+
+				panel.addView(tb);
 			}
-space.addView(panel);
+			space.addView(panel);
 		}
 
 		getPrstList();
@@ -92,7 +95,7 @@ space.addView(panel);
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 			result = result + c.getString(colnum) + ":";
 		}
-		prstList= result.split(":");
+		prstList = result.split(":");
 		ourDatabase.close();
 	}
 }

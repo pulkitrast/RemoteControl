@@ -38,6 +38,7 @@ public class CreateDb {
 			db.execSQL("Create table "
 					+ DATABASE_TABLE3
 					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, prstname TEXT)");
+			db.execSQL("INSERT INTO " + DATABASE_TABLE3+"(prstname) VALUES ('default')");
 		}
 
 		@Override
@@ -84,10 +85,10 @@ public class CreateDb {
 
 		}
 		
-		cv3 = new ContentValues();	
+	/*	cv3 = new ContentValues();	
 		cv3.put("prstname", "default");
 		ourDatabase.insert(DATABASE_TABLE3, null, cv3);
-	}
+	*/}
 
 	public String[] getPrst() {
 		String[] columns = new String[] { "_id", "prstname" };
