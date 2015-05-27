@@ -50,9 +50,12 @@
             android:id="@+id/etpname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:maxLength="20"
+            android:hint="Preset Name"
+            android:singleLine="true"
             android:enabled="false"
-            android:focusable="false"
+            android:visibility="invisible"
+            
             >
 
             
@@ -77,10 +80,10 @@
                 android:text="Save" />
 
             <Button
-                android:id="@+id/btload"
+                android:id="@+id/btedit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Load" />
+                android:text="Edit" />
 
             <Button
                 android:id="@+id/btdelete"

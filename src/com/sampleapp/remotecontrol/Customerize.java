@@ -1,10 +1,12 @@
 package com.sampleapp.remotecontrol;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.transition.Visibility;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,7 +21,7 @@ import android.widget.ToggleButton;
 
 public class Customerize extends Activity {
 	Spinner prstnames;
-	Button btsave, btload, btdelete;
+	Button btsave, btedit, btdelete, btnew;
 	EditText etpname;
 
 	String[] prstList;
@@ -27,7 +29,7 @@ public class Customerize extends Activity {
 	String pr = "", sq = "";
 	SQLiteDatabase ourDatabase;
 	SharedPreferences sh;
-	int colnum, n, i;
+	int colnum1, colnum2, n, i;
 	CreateDb entry;
 	static int x[] = new int[999];
 	int y = 0;
@@ -91,17 +93,54 @@ public class Customerize extends Activity {
 	}
 
 	private void setListerners() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub\
+
+		btedit.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				n = prstnames.getSelectedItemPosition();
+
+				String[] s = (modSeqn1[n]).split(",");
+				for (i = 0; i < s.length; i++) {
+					int id = Integer.parseInt(s[i]);
+					ToggleButton tb = (ToggleButton) findViewById(id);
+					tb.setChecked(true);
+				}
+
+				/*
+				 * Dialog d = new Dialog(Customerize.this);
+				 * d.setTitle("Successful!"); TextView tv = new
+				 * TextView(Customerize.this); tv.setText(modSeqn1[n]);
+				 * d.setContentView(tv); d.show();
+				 */
+
+			}
+		});
+
+		btnew.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				etpname.setEnabled(true);
+				etpname.setFocusable(true);
+				etpname.setVisibility(Visibility.MODE_IN);
+			}
+		});
 	}
 
 	private void init() {
 
 		sh = getSharedPreferences("myprefes", 0);
 		btsave = (Button) findViewById(R.id.btsave);
-		btload = (Button) findViewById(R.id.btload);
+		btedit = (Button) findViewById(R.id.btedit);
 		btdelete = (Button) findViewById(R.id.btdelete);
+		btnew = (Button) findViewById(R.id.btnew);
 		prstnames = (Spinner) findViewById(R.id.spinner1);
+		etpname=(EditText) findViewById(R.id.etpname);
 		entry = new CreateDb(this);
 	}
 
@@ -112,15 +151,16 @@ public class Customerize extends Activity {
 		String[] columns = new String[] { "_id", "prstname", "seqn" };
 		Cursor c = ourDatabase.query(CreateDb.DATABASE_TABLE3, columns, null,
 				null, null, null, null);
-		colnum = c.getColumnIndex("prstname");
+		colnum1 = c.getColumnIndex("prstname");
+		colnum2 = c.getColumnIndex("seqn");
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			pr = pr + c.getString(colnum) + ":";
-			sq = sq + c.getString(c.getColumnIndex("seqn")) + ".";
+			pr = pr + c.getString(colnum1) + ":";
+			sq = sq + c.getString(colnum2) + ":";
 		}
 
 		prstList = pr.split(":");
-		modSeqn1 = sq.split(".");
+		modSeqn1 = sq.split(":");
 
-		// ourDatabase.close();
+		ourDatabase.close();
 	}
 }
