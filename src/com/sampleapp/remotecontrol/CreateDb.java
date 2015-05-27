@@ -3,17 +3,18 @@ package com.sampleapp.remotecontrol;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class CreateDb {
 
-
 	private static final String DATABASE_NAME = "RemoteCtrlDB";
-	private static final String DATABASE_TABLE1 = "ModIndex";
-	private static final String DATABASE_TABLE2 = "SwchIndex";
-	private static final int DATABASE_VERSION = 1;
+	 static final String DATABASE_TABLE1 = "ModIndex";
+	 static final String DATABASE_TABLE2 = "SwchIndex";
+	 static final String DATABASE_TABLE3 = "PrstIndex";
+	 static final int DATABASE_VERSION = 1;
 
 	private final Context ourContext;
 	private SQLiteDatabase ourDatabase;
@@ -29,8 +30,14 @@ public class CreateDb {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			// TODO Auto-generated method stub
-			db.execSQL("Create table "+ DATABASE_TABLE1	+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, mname TEXT)");
-			db.execSQL("Create table "+ DATABASE_TABLE2	+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, preset INTEGER,swstate INTEGER, mode TEXT )");
+			db.execSQL("Create table " + DATABASE_TABLE1
+					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, mname TEXT)");
+			db.execSQL("Create table "
+					+ DATABASE_TABLE2
+					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, preset INTEGER,swstate INTEGER, mode TEXT )");
+			db.execSQL("Create table "
+					+ DATABASE_TABLE3
+					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, prstname TEXT)");
 		}
 
 		@Override
@@ -44,34 +51,54 @@ public class CreateDb {
 	public CreateDb(Context c) {
 		ourContext = c;
 	}
-	
-	public CreateDb open(){
-		
-		ourHelper= new DbHelper(ourContext);
-		ourDatabase=ourHelper.getWritableDatabase();
-	return this;
+
+	public CreateDb open() {
+
+		ourHelper = new DbHelper(ourContext);
+		ourDatabase = ourHelper.getWritableDatabase();
+		return this;
 	}
-	public void close(){
+	public SQLiteDatabase openSp() {
+
+		ourHelper = new DbHelper(ourContext);
+		ourDatabase = ourHelper.getWritableDatabase();
+		return ourDatabase;
+	}
+
+	public void close() {
 		ourHelper.close();
 	}
 
 	public void addData() {
 		// TODO Auto-generated method stub
-		ContentValues cv1,cv2,cv3;
-		cv1=new ContentValues();
+		ContentValues cv1, cv2, cv3;
+		cv1 = new ContentValues();
 		cv1.put("mname", Addmod.mod_n);
-		ourDatabase.insert(DATABASE_TABLE1,null,cv1);
-		cv2=new ContentValues();
-		for (int i=0;i<5;i++)
-		{
+		ourDatabase.insert(DATABASE_TABLE1, null, cv1);
+		cv2 = new ContentValues();
+		for (int i = 0; i < 5; i++) {
 			cv2.put("preset", 0);
 			cv2.put("SwState", Addmod.s_d[i]);
 			cv2.put("mode", Addmod.rg_d[i]);
-		
+			
+
 		}
-		ourDatabase.insert(DATABASE_TABLE2,null,cv2);
 		
-		
+		cv3 = new ContentValues();	
+		cv3.put("prstname", "default");
+		ourDatabase.insert(DATABASE_TABLE3, null, cv3);
 	}
-	
+
+	public String[] getPrst() {
+		String[] columns = new String[] { "_id", "prstname" };
+		Cursor c = ourDatabase.query(DATABASE_TABLE3, columns, null, null,
+				null, null, null);
+		String result = "";
+		int j = c.getColumnIndex("prstname");
+		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+			result=result+c.getString(j)+":";
+			}
+				String [] prstList=result.split(":");
+		return prstList;
+	}
 }
