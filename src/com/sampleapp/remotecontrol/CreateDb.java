@@ -1,7 +1,7 @@
 package com.sampleapp.remotecontrol;
 
+import android.content.ContentValues;
 import android.content.Context;
-
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -13,7 +13,6 @@ public class CreateDb {
 	private static final String DATABASE_NAME = "RemoteCtrlDB";
 	private static final String DATABASE_TABLE1 = "ModIndex";
 	private static final String DATABASE_TABLE2 = "SwchIndex";
-	private static final String DATABASE_TABLE3 = "IcnIndex";
 	private static final int DATABASE_VERSION = 1;
 
 	private final Context ourContext;
@@ -30,16 +29,8 @@ public class CreateDb {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			// TODO Auto-generated method stub
-			db.execSQL("Create table "
-					+ DATABASE_TABLE1
-					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, mname TEXT NOT NULL)");
-			db.execSQL("Create table "
-					+ DATABASE_TABLE2
-					+ "(_id INTEGER PRIMARY KEY AUTOINCREMENT, sname TEXT NOT NULL,SwState, iconid INTEGER, mode TEXT NOT NULL)");
-			db.execSQL("Create table "
-					+ DATABASE_TABLE3
-					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT NOT NULL)");
-			new SetShared();
+			db.execSQL("Create table "+ DATABASE_TABLE1	+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, mname TEXT)");
+			db.execSQL("Create table "+ DATABASE_TABLE2	+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, preset INTEGER,swstate INTEGER, mode TEXT )");
 		}
 
 		@Override
@@ -64,8 +55,22 @@ public class CreateDb {
 		ourHelper.close();
 	}
 
-	public void addRow() {
+	public void addData() {
 		// TODO Auto-generated method stub
+		ContentValues cv1,cv2,cv3;
+		cv1=new ContentValues();
+		cv1.put("mname", Addmod.mod_n);
+		ourDatabase.insert(DATABASE_TABLE1,null,cv1);
+		cv2=new ContentValues();
+		for (int i=0;i<5;i++)
+		{
+			cv2.put("preset", 0);
+			cv2.put("SwState", Addmod.s_d[i]);
+			cv2.put("mode", Addmod.rg_d[i]);
+		
+		}
+		ourDatabase.insert(DATABASE_TABLE2,null,cv2);
+		
 		
 	}
 	

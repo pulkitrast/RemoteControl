@@ -9,6 +9,6 @@ public class SetShared extends Activity{
 	SetShared(){
 		SharedPreferences sh=getSharedPreferences("myprefs", 0);
 		Editor editor=sh.edit();
-		editor.putInt("modlen", 0);
+		editor.putInt("size", 0);
 	}
 }
