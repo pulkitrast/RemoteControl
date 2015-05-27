@@ -34,7 +34,7 @@ public class CreateDb {
 					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, mname TEXT)");
 			db.execSQL("Create table "
 					+ DATABASE_TABLE2
-					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT, preset INTEGER,swstate INTEGER, mode TEXT )");
+					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT,swstate INTEGER, mode TEXT )");
 			db.execSQL("Create table "
 					+ DATABASE_TABLE3
 					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, prstname TEXT,seqn TEXT)");
@@ -72,24 +72,23 @@ public class CreateDb {
 
 	public void addData() {
 		// TODO Auto-generated method stub
-		ContentValues cv1, cv2, cv3;
+		ContentValues cv1, cv2;
 		cv1 = new ContentValues();
 		cv1.put("mname", Addmod.mod_n);
+		
 		ourDatabase.insert(DATABASE_TABLE1, null, cv1);
+		
 		cv2 = new ContentValues();
 		for (int i = 0; i < 5; i++) {
-			cv2.put("preset", 0);
-			cv2.put("SwState", Addmod.s_d[i]);
+			cv2.put("swstate", Addmod.s_d[i]);
 			cv2.put("mode", Addmod.rg_d[i]);
+			ourDatabase.insert(DATABASE_TABLE2, null, cv2);
 			
 
 		}
 		
-	/*	cv3 = new ContentValues();	
-		cv3.put("prstname", "default");
-		ourDatabase.insert(DATABASE_TABLE3, null, cv3);
-	*/}
-
+}
+/*
 	public String[] getPrst() {
 		String[] columns = new String[] { "_id", "prstname" };
 		Cursor c = ourDatabase.query(DATABASE_TABLE3, columns, null, null,
@@ -101,5 +100,5 @@ public class CreateDb {
 			}
 				String [] prstList=result.split(":");
 		return prstList;
-	}
+	}*/
 }

@@ -26,6 +26,7 @@ public class Customerize extends Activity {
 
 	String[] prstList;
 	String[] modSeqn1;
+	String[] states;
 	String pr = "", sq = "";
 	SQLiteDatabase ourDatabase;
 	SharedPreferences sh;
@@ -42,29 +43,32 @@ public class Customerize extends Activity {
 		init();
 		getPrstList();
 		setListerners();
-
+		try{
 		n = sh.getInt("size", 0);
 		final LinearLayout space = (LinearLayout) findViewById(R.id.space);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
 		for (i = 0; i < n; i++) {
 			TextView lable = new TextView(this);
 			lable.setText("Module name");
 			space.addView(lable);
-
 			LinearLayout panel = new LinearLayout(this);
 			panel.setOrientation(LinearLayout.HORIZONTAL);
 
 			panel.setGravity(Gravity.CENTER);
 			panel.setLayoutParams(params);
 			for (int j = 0; j < 5; j++) {
-				x[y++] = -1;
+				++y;
 				final ToggleButton tb = new ToggleButton(this);
 				tb.setId(y);
 				tb.setText("sw" + y);
 				tb.setTextOff("sw" + y);
 				tb.setTextOn("sw" + y);
+				
+			/*	if (states[y - 1] == "-1") {
+					x[y - 1] = -1;
+					tb.setEnabled(false);
+				}*/
 				tb.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -72,7 +76,7 @@ public class Customerize extends Activity {
 						// TODO Auto-button.requestFocus();generated method stub
 
 						if (tb.isChecked())
-							x[tb.getId()] = 1;
+							x[tb.getId()-1] = 1;
 
 					}
 				}
@@ -82,6 +86,12 @@ public class Customerize extends Activity {
 				panel.addView(tb);
 			}
 			space.addView(panel);
+		}
+		}catch(Exception e){
+			 Dialog d = new Dialog(Customerize.this);
+			 d.setTitle("Successful!"); TextView tv = new
+			 TextView(Customerize.this); tv.setText(e.getMessage());
+			 d.setContentView(tv); d.show();
 		}
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -105,9 +115,27 @@ public class Customerize extends Activity {
 
 				String[] s = (modSeqn1[n]).split(",");
 				for (i = 0; i < s.length; i++) {
-					int id = Integer.parseInt(s[i]);
-					ToggleButton tb = (ToggleButton) findViewById(id);
-					tb.setChecked(true);
+					int id = Integer.parseInt(s[i])-1;
+					if (x[id] == 0)
+						x[id] = 1;
+					else if (x[id] == 1)
+						x[id] = 0;
+				}
+
+				ToggleButton tb;
+				for (i = 0; i < y; i++) {
+					tb = (ToggleButton) findViewById(i + 1);
+					switch (x[i]) {
+					case 1:
+						tb.setChecked(true);
+						break;
+					case -1:
+						tb.setEnabled(false);
+						break;
+					case 0:
+						tb.setChecked(false);
+						break;
+					}
 				}
 
 				/*
@@ -116,18 +144,35 @@ public class Customerize extends Activity {
 				 * TextView(Customerize.this); tv.setText(modSeqn1[n]);
 				 * d.setContentView(tv); d.show();
 				 */
-
 			}
+
 		});
 
 		btnew.setOnClickListener(new View.OnClickListener() {
-			
 			@Override
+			//
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				etpname.setEnabled(true);
 				etpname.setFocusable(true);
 				etpname.setVisibility(Visibility.MODE_IN);
+			}
+		});
+		btsave.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// Push pname and sequence
+				String result = "";
+				for (i = 0; i < y; i++) {
+					switch (x[i]) {
+					case 1:
+						result = result + "," + (i + 1);
+					}
+				}
+				String pname = etpname.getText().toString();
+				// appendDb(pname,result);
+
 			}
 		});
 	}
@@ -140,7 +185,7 @@ public class Customerize extends Activity {
 		btdelete = (Button) findViewById(R.id.btdelete);
 		btnew = (Button) findViewById(R.id.btnew);
 		prstnames = (Spinner) findViewById(R.id.spinner1);
-		etpname=(EditText) findViewById(R.id.etpname);
+		etpname = (EditText) findViewById(R.id.etpname);
 		entry = new CreateDb(this);
 	}
 
@@ -160,7 +205,22 @@ public class Customerize extends Activity {
 
 		prstList = pr.split(":");
 		modSeqn1 = sq.split(":");
+		columns = new String[] { "swstate", "mode" };
 
+		ourDatabase = entry.openSp();
+	
+		c = ourDatabase.query(CreateDb.DATABASE_TABLE2, columns, null, null,
+				null, null, null);
+		colnum1 = c.getColumnIndex("swstate");
+		String s = "";
+		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+			s = s + c.getInt(colnum1) + ",";
+		}
+		states = s.split(",");
+		 Dialog d = new Dialog(Customerize.this);
+		 d.setTitle("Successful!"); TextView tv = new
+		 TextView(Customerize.this); tv.setText(s);
+		 d.setContentView(tv); d.show();
 		ourDatabase.close();
 	}
 }

@@ -1,7 +1,9 @@
 package com.sampleapp.remotecontrol;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -9,20 +11,23 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Addmod extends Activity {
 
 	Switch s[] = new Switch[5];
 	RadioGroup rg[] = new RadioGroup[5];
 	SharedPreferences sh;
-	EditText et;
-	Button bt;
+	EditText etmname;
+	Button btsyn;
 	static int[] s_d = { -1, -1, -1, -1, -1 };
 	static String[] rg_d = { "NRM", "NRM", "NRM", "NRM", "NRM" };
 	static String mod_n = "";
+	int i = 0;
 	static int x;
 
 	@Override
@@ -31,58 +36,58 @@ public class Addmod extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_mod);
 		init();
-		bt.setOnClickListener(new View.OnClickListener() {
+
+		btsyn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				mod_n = (et.getText()).toString();
-				if (mod_n == null) {
-					mod_n = "";
-					return;
+				mod_n = (etmname.getText()).toString();
+				for (i = 0; i < 5; i++) {
+					if (s[i].isChecked()) {
+						s_d[i] = 0;
+					}
+					RadioButton rb = (RadioButton) findViewById(rg[i]
+							.getCheckedRadioButtonId());
+					rg_d[i] = rb.getText().toString();
 				}
-
-				Dialog d1 = new Dialog(Addmod.this);
-				d1.setTitle("Attempting Sync!");
-				TextView tv1 = new TextView(Addmod.this);
-				tv1.setText("Enter a Name For Module");
-				d1.setContentView(tv1);
-				d1.show();
-				
-				
 
 				try {
 					CreateDb entry = new CreateDb(Addmod.this);
 					entry.open();
 					entry.addData();
 					entry.close();
-					d1.dismiss();
 					Editor editor = sh.edit();
-					editor.putInt("size",x);
+					editor.putInt("size", x);
 					editor.commit();
-					
+
 				} catch (Exception e) {
-					d1.dismiss();
 					Dialog d = new Dialog(Addmod.this);
 					d.setTitle("ERROR!");
 					TextView tv = new TextView(Addmod.this);
-					tv.setText("Something is Wrong:"+e);
+					tv.setText("Something is Wrong:" + e);
 					d.setContentView(tv);
 					d.show();
-					
-				} 
 
-				
-				d1.dismiss();
-				Dialog d = new Dialog(Addmod.this);
-				d.setTitle("Successful!");
-				TextView tv = new TextView(Addmod.this);
-				tv.setText("You Module is ready to use.");
-				d.setContentView(tv);
-				d.show();
+				}
+
+				new AlertDialog.Builder(Addmod.this)
+						.setTitle("Success!")
+						.setMessage(
+								"Your Module has been successfully integrated.Press OK to proceed.")
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setPositiveButton(android.R.string.ok,
+								new DialogInterface.OnClickListener() {
+
+									public void onClick(DialogInterface dialog,
+											int whichButton) {
+										finish();
+									}
+								}).show();
 
 			}
 		});
+
 	}
 
 	private void init() {
@@ -97,11 +102,11 @@ public class Addmod extends Activity {
 		rg[2] = (RadioGroup) findViewById(R.id.radioGroup3);
 		rg[3] = (RadioGroup) findViewById(R.id.radioGroup4);
 		rg[4] = (RadioGroup) findViewById(R.id.radioGroup5);
-		bt = (Button) findViewById(R.id.btSync);
-		et = (EditText) findViewById(R.id.etModname);
+		btsyn = (Button) findViewById(R.id.btSync);
+		etmname = (EditText) findViewById(R.id.etModname);
 		sh = getSharedPreferences("myprefes", 0);
 		x = sh.getInt("size", 0) + 1;
-		et.setText("Module" + x);
+		etmname.setText("Module" + x);
 
 	}
 

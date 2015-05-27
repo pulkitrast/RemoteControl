@@ -23,23 +23,16 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical" >
-
-             
-                 
             </LinearLayout>
-
-            
-
         </ScrollView>
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/lower"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1"> 
+        android:layout_weight="1"
+        android:orientation="vertical" >
 
         <Spinner
             android:id="@+id/spinner1"
@@ -50,15 +43,11 @@
             android:id="@+id/etpname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="20"
-            android:hint="Preset Name"
-            android:singleLine="true"
             android:enabled="false"
-            android:visibility="invisible"
-            
-            >
-
-            
+            android:hint="Preset Name"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:visibility="invisible" >
         </EditText>
 
         <LinearLayout
@@ -91,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:text="Delete" />
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>
