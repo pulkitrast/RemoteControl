@@ -30,10 +30,10 @@ public class Customerize extends Activity {
 	String pr = "", sq = "";
 	SQLiteDatabase ourDatabase;
 	SharedPreferences sh;
-	int colnum1, colnum2, n, i;
+	int colnum1, colnum2, n, i, j, maxSw = 0;
 	CreateDb entry;
 	static int x[] = new int[999];
-	int y = 0;
+	int y = 0, pos;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,55 +43,62 @@ public class Customerize extends Activity {
 		init();
 		getPrstList();
 		setListerners();
-		try{
-		n = sh.getInt("size", 0);
-		final LinearLayout space = (LinearLayout) findViewById(R.id.space);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		for (i = 0; i < n; i++) {
-			TextView lable = new TextView(this);
-			lable.setText("Module name");
-			space.addView(lable);
-			LinearLayout panel = new LinearLayout(this);
-			panel.setOrientation(LinearLayout.HORIZONTAL);
+		try {
 
-			panel.setGravity(Gravity.CENTER);
-			panel.setLayoutParams(params);
-			for (int j = 0; j < 5; j++) {
-				++y;
-				final ToggleButton tb = new ToggleButton(this);
-				tb.setId(y);
-				tb.setText("sw" + y);
-				tb.setTextOff("sw" + y);
-				tb.setTextOn("sw" + y);
-				
-			/*	if (states[y - 1] == "-1") {
-					x[y - 1] = -1;
-					tb.setEnabled(false);
-				}*/
-				tb.setOnClickListener(new OnClickListener() {
+			final LinearLayout space = (LinearLayout) findViewById(R.id.space);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			n = maxSw / 5;
+			for (i = 0; i < n; i++) {
+				TextView lable = new TextView(this);
+				lable.setText("Module name");
+				space.addView(lable);
+				LinearLayout panel = new LinearLayout(this);
+				panel.setOrientation(LinearLayout.HORIZONTAL);
 
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-button.requestFocus();generated method stub
+				panel.setGravity(Gravity.CENTER);
+				panel.setLayoutParams(params);
+				for (int j = 0; j < 5; j++) {
 
-						if (tb.isChecked())
-							x[tb.getId()-1] = 1;
+					final ToggleButton tb = new ToggleButton(this);
+					tb.setId(y + 1);
+					tb.setText("sw" + (y + 1));
+					tb.setTextOff("sw" + (y + 1));
+					tb.setTextOn("sw" + (y + 1));
 
+					if (states[y] == "-1") {
+						x[y] = -1;
+						tb.setFocusable(false);
+						tb.setFocusableInTouchMode(false);
+						tb.setEnabled(false);
 					}
+					y++;
+					tb.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-button.requestFocus();generated method
+							// stub
+
+							if (tb.isChecked())
+								x[tb.getId() - 1] = 1;
+
+						}
+					}
+
+					);
+
+					panel.addView(tb);
 				}
-
-				);
-
-				panel.addView(tb);
+				space.addView(panel);
 			}
-			space.addView(panel);
-		}
-		}catch(Exception e){
-			 Dialog d = new Dialog(Customerize.this);
-			 d.setTitle("Successful!"); TextView tv = new
-			 TextView(Customerize.this); tv.setText(e.getMessage());
-			 d.setContentView(tv); d.show();
+		} catch (Exception e) {
+			Dialog d = new Dialog(Customerize.this);
+			d.setTitle("Successful!");
+			TextView tv = new TextView(Customerize.this);
+			tv.setText(e.getMessage());
+			d.setContentView(tv);
+			d.show();
 		}
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -110,20 +117,40 @@ public class Customerize extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
 				n = prstnames.getSelectedItemPosition();
+				String[] sequence = (modSeqn1[n]).split(","); // gets preset
+																// sequence
+																// string for
+				try {
 
-				String[] s = (modSeqn1[n]).split(",");
-				for (i = 0; i < s.length; i++) {
-					int id = Integer.parseInt(s[i])-1;
-					if (x[id] == 0)
-						x[id] = 1;
-					else if (x[id] == 1)
-						x[id] = 0;
+					j = 0;
+					for (i = 0; i < maxSw; i++) {
+						pos = Integer.parseInt(sequence[j]) - 1;
+						if (i == pos) {
+							if (!(j == (sequence.length - 1)))
+
+							{
+								j++;
+							}
+							switch (x[pos]) {
+							case 0:
+								x[pos] = 1;
+								break;
+							}
+						} else {
+							x[i] = 0;
+						}
+					}
+				} catch (Exception e) {
+					Dialog d = new Dialog(Customerize.this);
+					d.setTitle("Error");
+					TextView tv = new TextView(Customerize.this);
+					tv.setText("i= " + i + "pos= " + pos);
+					d.setContentView(tv);
+					d.show();
 				}
-
 				ToggleButton tb;
-				for (i = 0; i < y; i++) {
+				for (i = 0; i < maxSw; i++) {
 					tb = (ToggleButton) findViewById(i + 1);
 					switch (x[i]) {
 					case 1:
@@ -187,6 +214,8 @@ public class Customerize extends Activity {
 		prstnames = (Spinner) findViewById(R.id.spinner1);
 		etpname = (EditText) findViewById(R.id.etpname);
 		entry = new CreateDb(this);
+		maxSw = sh.getInt("size", 1) * 5;
+
 	}
 
 	private void getPrstList() {
@@ -208,7 +237,7 @@ public class Customerize extends Activity {
 		columns = new String[] { "swstate", "mode" };
 
 		ourDatabase = entry.openSp();
-	
+
 		c = ourDatabase.query(CreateDb.DATABASE_TABLE2, columns, null, null,
 				null, null, null);
 		colnum1 = c.getColumnIndex("swstate");
@@ -217,10 +246,12 @@ public class Customerize extends Activity {
 			s = s + c.getInt(colnum1) + ",";
 		}
 		states = s.split(",");
-		 Dialog d = new Dialog(Customerize.this);
-		 d.setTitle("Successful!"); TextView tv = new
-		 TextView(Customerize.this); tv.setText(s);
-		 d.setContentView(tv); d.show();
+		Dialog d = new Dialog(Customerize.this);
+		d.setTitle("Successful!");
+		TextView tv = new TextView(Customerize.this);
+		tv.setText(s);
+		d.setContentView(tv);
+		d.show();
 		ourDatabase.close();
 	}
 }
