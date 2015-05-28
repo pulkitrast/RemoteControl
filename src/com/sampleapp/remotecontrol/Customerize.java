@@ -2,6 +2,7 @@ package com.sampleapp.remotecontrol;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,7 +28,7 @@ public class Customerize extends Activity {
 	String[] prstList;
 	String[] modSeqn1;
 	String[] states;
-	String pr = "", sq = "", presname="";
+	String pr = "", sq = "", presname = "";
 	SQLiteDatabase ourDatabase;
 	SharedPreferences sh;
 	int colnum1, colnum2, n, i, j, maxSw = 0;
@@ -176,7 +177,7 @@ public class Customerize extends Activity {
 						Dialog d = new Dialog(Customerize.this);
 						d.setTitle("For edit save");
 						TextView tv = new TextView(Customerize.this);
-						tv.setText(" PRESET MODIFIED " );
+						tv.setText(" PRESET MODIFIED ");
 						d.setContentView(tv);
 						d.show();
 
@@ -194,7 +195,7 @@ public class Customerize extends Activity {
 
 		btnew.setOnClickListener(new View.OnClickListener() {
 			@Override
-			//
+			// ON Pressing new
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				etpname.setEnabled(true);
@@ -204,35 +205,35 @@ public class Customerize extends Activity {
 
 					@Override
 					public void onClick(View v) {
-						// Push pname and sequence
-						Dialog d = new Dialog(Customerize.this);
-						d.setTitle("For NEW button");
-						TextView tv = new TextView(Customerize.this);
-						tv.setText("NEW PRESET CREATED " );
-						d.setContentView(tv);
-						d.show();
-
+						// ON Pressing Save after new
+						presname = etpname.getText().toString();
+						if (!presname.isEmpty()) {
+							String result = "";
+							for (i = 0; i < maxSw; i++) {
+								if (x[i] == 1)
+									result = result + "," + (i + 1);
+							}
+							Dialog d = new Dialog(Customerize.this);
+							d.setTitle("For NEW button");
+							TextView tv = new TextView(Customerize.this);
+							tv.setText("NEW PRESET CREATED :" + result);
+							d.setContentView(tv);
+							d.show();
+							addPrstData(presname, result);
+							
+						} else {
+							Dialog d = new Dialog(Customerize.this);
+							d.setTitle("WARNING");
+							TextView tv = new TextView(Customerize.this);
+							tv.setText("Enter a vaild name for preset. ");
+							d.setContentView(tv);
+							d.show();
+						}
 					}
 				});
 			}
 		});
-	/*	btsave.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// Push pname and sequence
-				String result = "";
-				for (i = 0; i < y; i++) {
-					switch (x[i]) {
-					case 1:
-						result = result + "," + (i + 1);
-					}
-				}
-				presname= etpname.getText().toString();
-				// appendDb(pname,result);
-
-			}
-		});*/
 	}
 
 	private void init() {
@@ -246,7 +247,6 @@ public class Customerize extends Activity {
 		etpname = (EditText) findViewById(R.id.etpname);
 		entry = new CreateDb(this);
 		maxSw = sh.getInt("size", 1) * 5;
-		
 
 	}
 
@@ -263,13 +263,11 @@ public class Customerize extends Activity {
 			pr = pr + c.getString(colnum1) + ":";
 			sq = sq + c.getString(colnum2) + ":";
 		}
-
 		prstList = pr.split(":");
 		modSeqn1 = sq.split(":");
 		columns = new String[] { "swstate", "mode" };
 
 		ourDatabase = entry.openSp();
-
 		c = ourDatabase.query(CreateDb.DATABASE_TABLE2, columns, null, null,
 				null, null, null);
 		colnum1 = c.getColumnIndex("swstate");
@@ -281,9 +279,20 @@ public class Customerize extends Activity {
 		Dialog d = new Dialog(Customerize.this);
 		d.setTitle("States column");
 		TextView tv = new TextView(Customerize.this);
-		tv.setText(s+"    " +prstList.length);
+		tv.setText(s + "    " + prstList.length);
 		d.setContentView(tv);
 		d.show();
+		ourDatabase.close();
+	}
+
+	private void addPrstData(String name, String seq) {
+
+		ourDatabase = entry.openSp();
+		ContentValues cv;
+		cv = new ContentValues();
+		cv.put("prstname", name);
+		cv.put("seqn", seq);
+		ourDatabase.insert(CreateDb.DATABASE_TABLE3, null, cv);
 		ourDatabase.close();
 	}
 }
