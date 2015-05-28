@@ -34,10 +34,10 @@ public class CreateDb {
 					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, mname TEXT)");
 			db.execSQL("Create table "
 					+ DATABASE_TABLE2
-					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT,swstate INTEGER, mode TEXT )");
+					+ " (_id INTEGER PRIMARY KEY AUTOINCREMENT,swstate INTEGER NOT NULL, mode TEXT NOT NULL)");
 			db.execSQL("Create table "
 					+ DATABASE_TABLE3
-					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, prstname TEXT,seqn TEXT)");
+					+ " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, prstname TEXT NOT NULL,seqn TEXT)");
 			db.execSQL("INSERT INTO " + DATABASE_TABLE3+"(prstname,seqn) VALUES ('default','1,2,3,4,5')");
 		}
 
@@ -70,35 +70,5 @@ public class CreateDb {
 		ourHelper.close();
 	}
 
-	public void addData() {
-		// TODO Auto-generated method stub
-		ContentValues cv1, cv2;
-		cv1 = new ContentValues();
-		cv1.put("mname", Addmod.mod_n);
-		
-		ourDatabase.insert(DATABASE_TABLE1, null, cv1);
-		
-		cv2 = new ContentValues();
-		for (int i = 0; i < 5; i++) {
-			cv2.put("swstate", Addmod.s_d[i]);
-			cv2.put("mode", Addmod.rg_d[i]);
-			ourDatabase.insert(DATABASE_TABLE2, null, cv2);
-			
 
-		}
-		
-}
-/*
-	public String[] getPrst() {
-		String[] columns = new String[] { "_id", "prstname" };
-		Cursor c = ourDatabase.query(DATABASE_TABLE3, columns, null, null,
-				null, null, null);
-		String result = "";
-		int j = c.getColumnIndex("prstname");
-		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-			result=result+c.getString(j)+":";
-			}
-				String [] prstList=result.split(":");
-		return prstList;
-	}*/
 }
