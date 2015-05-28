@@ -20,14 +20,14 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 public class Customerize extends Activity {
-	Spinner prstnames;
+	Spinner prstnamesSel;
 	Button btsave, btedit, btdelete, btnew;
 	EditText etpname;
 
 	String[] prstList;
 	String[] modSeqn1;
 	String[] states;
-	String pr = "", sq = "";
+	String pr = "", sq = "", presname="";
 	SQLiteDatabase ourDatabase;
 	SharedPreferences sh;
 	int colnum1, colnum2, n, i, j, maxSw = 0;
@@ -66,10 +66,8 @@ public class Customerize extends Activity {
 					tb.setTextOff("sw" + (y + 1));
 					tb.setTextOn("sw" + (y + 1));
 
-					if (states[y] == "-1") {
+					if ("-1".equals(states[y])) {
 						x[y] = -1;
-						tb.setFocusable(false);
-						tb.setFocusableInTouchMode(false);
 						tb.setEnabled(false);
 					}
 					y++;
@@ -105,7 +103,7 @@ public class Customerize extends Activity {
 				Customerize.this, android.R.layout.simple_spinner_item,
 				prstList);
 
-		prstnames.setAdapter(adapter);
+		prstnamesSel.setAdapter(adapter);
 
 	}
 
@@ -117,7 +115,7 @@ public class Customerize extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				n = prstnames.getSelectedItemPosition();
+				n = prstnamesSel.getSelectedItemPosition();
 				String[] sequence = (modSeqn1[n]).split(","); // gets preset
 																// sequence
 																// string for
@@ -164,7 +162,26 @@ public class Customerize extends Activity {
 						break;
 					}
 				}
+				etpname.setEnabled(true);
+				etpname.setFocusable(true);
+				etpname.setVisibility(Visibility.MODE_IN);
+				etpname.requestFocus();
+				etpname.selectAll();
+				etpname.setText(prstnamesSel.getSelectedItem().toString());
+				btsave.setOnClickListener(new View.OnClickListener() {
 
+					@Override
+					public void onClick(View v) {
+						// Push pname and sequence
+						Dialog d = new Dialog(Customerize.this);
+						d.setTitle("For edit save");
+						TextView tv = new TextView(Customerize.this);
+						tv.setText(" PRESET MODIFIED " );
+						d.setContentView(tv);
+						d.show();
+
+					}
+				});
 				/*
 				 * Dialog d = new Dialog(Customerize.this);
 				 * d.setTitle("Successful!"); TextView tv = new
@@ -183,9 +200,23 @@ public class Customerize extends Activity {
 				etpname.setEnabled(true);
 				etpname.setFocusable(true);
 				etpname.setVisibility(Visibility.MODE_IN);
+				btsave.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// Push pname and sequence
+						Dialog d = new Dialog(Customerize.this);
+						d.setTitle("For NEW button");
+						TextView tv = new TextView(Customerize.this);
+						tv.setText("NEW PRESET CREATED " );
+						d.setContentView(tv);
+						d.show();
+
+					}
+				});
 			}
 		});
-		btsave.setOnClickListener(new View.OnClickListener() {
+	/*	btsave.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -197,11 +228,11 @@ public class Customerize extends Activity {
 						result = result + "," + (i + 1);
 					}
 				}
-				String pname = etpname.getText().toString();
+				presname= etpname.getText().toString();
 				// appendDb(pname,result);
 
 			}
-		});
+		});*/
 	}
 
 	private void init() {
@@ -211,10 +242,11 @@ public class Customerize extends Activity {
 		btedit = (Button) findViewById(R.id.btedit);
 		btdelete = (Button) findViewById(R.id.btdelete);
 		btnew = (Button) findViewById(R.id.btnew);
-		prstnames = (Spinner) findViewById(R.id.spinner1);
+		prstnamesSel = (Spinner) findViewById(R.id.spinner1);
 		etpname = (EditText) findViewById(R.id.etpname);
 		entry = new CreateDb(this);
 		maxSw = sh.getInt("size", 1) * 5;
+		
 
 	}
 
@@ -247,9 +279,9 @@ public class Customerize extends Activity {
 		}
 		states = s.split(",");
 		Dialog d = new Dialog(Customerize.this);
-		d.setTitle("Successful!");
+		d.setTitle("States column");
 		TextView tv = new TextView(Customerize.this);
-		tv.setText(s);
+		tv.setText(s+"    " +prstList.length);
 		d.setContentView(tv);
 		d.show();
 		ourDatabase.close();
