@@ -57,12 +57,14 @@ public class Addmod extends Activity {
 				}
 
 				try {
-
 					addData();
+					x++;
 					Editor editor = sh.edit();
 					editor.putInt("size", x);
 					editor.commit();
-
+					et_mod_name.setText("Module "+(x+1));
+				
+					
 				} catch (Exception e) {
 					Dialog d = new Dialog(Addmod.this);
 					d.setTitle("ERROR!");
@@ -72,7 +74,7 @@ public class Addmod extends Activity {
 					d.show();
 
 				}
-
+				 
 				new AlertDialog.Builder(Addmod.this)
 						.setTitle("Success!")
 						.setMessage(
@@ -86,6 +88,8 @@ public class Addmod extends Activity {
 										//finish();
 									}
 								}).show();
+			
+				
 
 			}
 		});
@@ -109,15 +113,14 @@ public class Addmod extends Activity {
 		entry = new CreateDb(this);
 		sh = getSharedPreferences("myprefs", 0);
 		x = sh.getInt("size", -1);
-		if (x == -1) {
+		if (x <1) {
 			Editor editor = sh.edit();
 			editor.putInt("size", 0);
-			x = 1;
-		} else {
-			x++;
+			editor.commit();
+			x = 0;
+			et_mod_name.setText("Module 1");
 		}
-		et_mod_name.setText("Module" + x);
-
+		
 	}
 
 	private void addData() {

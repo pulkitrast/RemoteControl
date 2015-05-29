@@ -69,12 +69,12 @@ public class MsterControl extends Activity {
 							// TODO Auto-generated method stub
 							int id=tb.getId();
 							if(tb.isChecked()){
-								switch_Toggled(id-1,1);
-								x[id-1]=0;
+								switch_Toggled(id,1);
+								x[id]=0;
 							}
 								else {
-									switch_Toggled(id-1,1);
-									x[id-1]=0;
+									switch_Toggled(id,1);
+									x[id]=0;
 								}
 							}
 						
