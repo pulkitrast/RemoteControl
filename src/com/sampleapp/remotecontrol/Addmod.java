@@ -113,6 +113,7 @@ public class Addmod extends Activity {
 		entry = new CreateDb(this);
 		sh = getSharedPreferences("myprefs", 0);
 		x = sh.getInt("size", -1);
+		et_mod_name.setText("Module "+x);
 		if (x <1) {
 			Editor editor = sh.edit();
 			editor.putInt("size", 0);
@@ -145,10 +146,7 @@ public class Addmod extends Activity {
 			Dialog d = new Dialog(this);
 			d.setTitle("addData()");
 			TextView tv = new TextView(this);
-			tv.setText("ERROR :" + e + "\n"
-
-			);
-
+			tv.setText("ERROR :" + e + "\n");
 			d.setContentView(tv);
 			d.show();
 		}
