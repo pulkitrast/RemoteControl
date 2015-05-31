@@ -31,6 +31,7 @@ public class Addmod extends Activity {
 	static int[] sw_default_states = { 2, 2, 2, 2, 2 };
 	static String[] rg_default_mode = { "NRM", "NRM", "NRM", "NRM", "NRM" };
 	static String mod_name = "";
+	
 	int i = 0;
 	int x;
 
@@ -85,12 +86,9 @@ public class Addmod extends Activity {
 
 									public void onClick(DialogInterface dialog,
 											int whichButton) {
-										//finish();
+										finish();
 									}
 								}).show();
-			
-				
-
 			}
 		});
 
@@ -113,15 +111,45 @@ public class Addmod extends Activity {
 		entry = new CreateDb(this);
 		sh = getSharedPreferences("myprefs", 0);
 		x = sh.getInt("size", -1);
-		et_mod_name.setText("Module "+x);
+		
 		if (x <1) {
 			Editor editor = sh.edit();
 			editor.putInt("size", 0);
 			editor.commit();
 			x = 0;
-			et_mod_name.setText("Module 1");
 		}
+		et_mod_name.setText("Module "+(x+1));
 		
+		
+		
+		new AlertDialog.Builder(Addmod.this)
+		.setTitle("Auto Sync In Progres..")
+		.setMessage
+				("Please wait while the new module is integrated into the App OR Setup the module manually by tapping Manual.")
+		.setIcon(android.R.drawable.ic_dialog_alert)
+		.setPositiveButton(R.string.Manualbutton,
+				new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog,
+							int whichButton) {
+				
+						new AlertDialog.Builder(Addmod.this)
+						.setTitle("Manual Mode")
+						.setMessage(
+								"Carefully enable the switches that have been successfully connected and Press Sync button. Be sure before the final step as integrated module CANNOT be REMOVED!")
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setPositiveButton(R.string.proceed,
+								new DialogInterface.OnClickListener() {
+
+									public void onClick(DialogInterface dialog,
+											int whichButton) {
+																}
+								}).show();
+					
+					
+					}
+				
+				}).show();
 	}
 
 	private void addData() {

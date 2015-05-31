@@ -9,13 +9,14 @@ import android.widget.ListView;
 
 public class Home extends ListActivity {
 	String options[]={"Addmod","Customerize","MsterControl"};
+	String options_display[]={"Setup New Module","Manage Presets","Controller"};
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setListAdapter(new ArrayAdapter<String>(Home.this,android.R.layout.simple_expandable_list_item_1,options));
+		setListAdapter(new ArrayAdapter<String>(Home.this,android.R.layout.simple_expandable_list_item_1,options_display));
 		
 	}
 
@@ -24,9 +25,8 @@ public class Home extends ListActivity {
 	 protected void onListItemClick(ListView l, View v, int position, long id) {
 		// TODO Auto-generated method stub
 		super.onListItemClick(l, v, position, id);
-		Class gotoOpt = null;
 		try {
-			gotoOpt = Class.forName("com.sampleapp.remotecontrol."+options[position]);
+			Class gotoOpt = Class.forName("com.sampleapp.remotecontrol."+options[position]);
 			Intent i= new Intent(Home.this,gotoOpt);
 			startActivity(i);
 		} catch (ClassNotFoundException e) {

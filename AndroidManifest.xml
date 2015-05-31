@@ -13,6 +13,7 @@
         android:label="@string/app_name" >
         <activity
             android:name="com.sampleapp.remotecontrol.Home"
+            android:screenOrientation="portrait"
             android:label="Home" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +23,7 @@
         </activity>
         <activity
             android:name="com.sampleapp.remotecontrol.Addmod"
+            android:screenOrientation="portrait"
             android:label="Setup New Module" >
             <intent-filter>
                 <action android:name="com.sampleapp.remotecontrol.ADDMOD" />
@@ -31,6 +33,7 @@
         </activity>
         <activity
             android:name="com.sampleapp.remotecontrol.Customerize"
+            android:screenOrientation="portrait"
             android:label="Preset Manager" >
             <intent-filter>
                 <action android:name="com.sampleapp.remotecontrol.CUSTOMERISE" />
@@ -41,6 +44,7 @@
         
          <activity
             android:name="com.sampleapp.remotecontrol.MsterControl"
+            android:screenOrientation="portrait"
             android:label="Master Controller" >
             <intent-filter>
                 <action android:name="com.sampleapp.remotecontrol.MSTRCONTROL" />

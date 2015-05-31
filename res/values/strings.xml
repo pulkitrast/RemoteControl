@@ -1,5 +1,7 @@
 <resources>
 
     <string name="app_name">RemoteControl</string>
-
+ <string name="Manualbutton">Manual</string>
+  <string name="Cancelbutton">Cancel button</string>
+   <string name="proceed">PROCEED</string>
 </resources>

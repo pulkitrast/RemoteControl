@@ -28,8 +28,8 @@
             android:id="@+id/handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick=""
-            android:text="Presets" />
+            android:text="PRESETS" 
+            android:textSize="25sp"/>
 
         <LinearLayout
             android:id="@+id/content"
@@ -39,14 +39,12 @@
    			 <FrameLayout
        		 android:id="@+id/body"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-    </FrameLayout>   
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            >
       
-     <TextView android:id="@android:id/empty"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:text="Empty set"></TextView>
-            
+     
+            </FrameLayout>
         </LinearLayout>
     </SlidingDrawer>
 

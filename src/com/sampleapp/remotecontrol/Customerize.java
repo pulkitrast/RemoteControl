@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -34,6 +35,7 @@ public class Customerize extends Activity {
 	String preset_name = "", new_sequence = "0";
 	SQLiteDatabase ourDatabase;
 	CreateDb entry;
+	static int fl=0;
 	SharedPreferences sh;
 	int n, i, j, maxModCount, maxSwCount;
 
@@ -296,6 +298,7 @@ public class Customerize extends Activity {
 		// TODO Auto-generated method stub
 		Intent intent = getIntent();
 		finish();
+		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 		startActivity(intent);
 	}
 
@@ -330,6 +333,20 @@ public class Customerize extends Activity {
 		final ToggleButton NULL = new ToggleButton(this);
 		NULL.setChecked(true);
 		NULL.setId(0);
+		if(fl==0){
+			fl=1;
+		new AlertDialog.Builder(this)
+		.setTitle("Welcome!")
+		.setMessage(
+				"Start creating presets by tapping New and selecting the desired configuration! Tap Edit to modify an exsisting preset.")
+		.setIcon(android.R.drawable.ic_dialog_alert)
+		.setPositiveButton(R.string.proceed,
+				new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog,
+							int whichButton) {
+												}
+				}).show();}
 	}
 
 	private void loadTableData() {

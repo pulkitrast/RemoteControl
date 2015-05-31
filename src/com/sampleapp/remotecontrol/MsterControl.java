@@ -2,8 +2,6 @@ package com.sampleapp.remotecontrol;
 
 import java.util.Arrays;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -16,9 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.LinearLayout.LayoutParams;
@@ -220,9 +216,6 @@ public class MsterControl extends FragmentActivity {
 			preset_sequence_list = pull_data1.split(":");
 			entry.close();
 		} catch (Exception e) {
-		}
-
-		finally {
 			Dialog d = new Dialog(this);
 			d.setTitle("loadTableData()");
 			TextView tv = new TextView(this);
@@ -236,9 +229,14 @@ public class MsterControl extends FragmentActivity {
 					+ Arrays.toString(preset_sequence_list) + "\n"
 					+ "maxModCount" + maxModCount + "\n" + "maxSwCount"
 					+ maxSwCount);
-
 			d.setContentView(tv);
 			d.show();
+		}
+
+		finally {
+			
+
+			
 		}
 	}
 
