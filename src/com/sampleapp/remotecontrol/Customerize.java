@@ -139,7 +139,8 @@ public class Customerize extends Activity {
 										+ "item position "
 										+ sp_preset_selector
 												.getSelectedItemId()).show();
-				y = 1;
+				if (sequence.length > 1) y = 1;
+				else y=0;
 				for (i = 0; i < maxSwCount; i++) {
 					t = (ToggleButton) findViewById(i + 1);
 					if (!t.isEnabled()) {

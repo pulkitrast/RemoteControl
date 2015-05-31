@@ -246,24 +246,33 @@ public class MsterControl extends FragmentActivity {
 		// TODO Auto-generated method stub
 		// read the selected preset sequence from preset_sequence_list
 		String[] selc_seq = preset_sequence_list[position].split(",");
-		ContentValues cv = new ContentValues();
-		y = 1;
-		// change swstate colum in table 2 as per preset sequence
-		ourDatabase = entry.openSp();
-		for (i = 0; i < maxSwCount; i++) {
-			if (((ToggleButton) findViewById(i + 1)).isEnabled()) {
-				if (((i + 1) + "").equals(selc_seq[y])) {
-					cv.put("swstate", 1);
-					if (y < (selc_seq.length-1))
-						y++;
-				} else
-					cv.put("swstate", 0);
-				ourDatabase.update(CreateDb.DATABASE_TABLE2, cv, "_id = "
-						+ (i + 1), null);
+		
+
+			ContentValues cv = new ContentValues();
+			if (selc_seq.length > 1) y = 1;
+			else y=0;
+			// change swstate colum in table 2 as per preset sequence
+			ourDatabase = entry.openSp();
+			for (i = 0; i < maxSwCount; i++) {
+				if (((ToggleButton) findViewById(i + 1)).isEnabled()) {
+					if (((i + 1) + "").equals(selc_seq[y])) {
+						
+						cv.put("swstate", 1);
+						if (y < (selc_seq.length - 1)) y++;
+							
+						} 
+					else
+						cv.put("swstate", 0);
+					
+					
+					ourDatabase.update(CreateDb.DATABASE_TABLE2, cv, "_id = "
+							+ (i + 1), null);
+
+				}
 
 			}
+			ourDatabase.close();
+		
 
-		}
-		ourDatabase.close();
 	}
 }
