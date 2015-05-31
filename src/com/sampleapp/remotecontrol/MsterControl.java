@@ -5,25 +5,35 @@ import java.util.Arrays;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.LinearLayout.LayoutParams;
 
-public class MsterControl extends Activity {
-	CreateDb entry;
-	SQLiteDatabase ourDatabase;
+public class MsterControl extends FragmentActivity {
+	static CreateDb entry;
+	static SQLiteDatabase ourDatabase;
 	SharedPreferences sh;
+	Fragment fragment;
 	int maxSwCount, i, j, y = 0, maxModCount;
-	String[] mod_name_list, switch_state_list, switch_mode_list,
-			preset_name_list, preset_sequence_list;
+	static String[] mod_name_list;
+	static String[] switch_state_list;
+	static String[] switch_mode_list;
+	static String[] preset_name_list;
+	static String[] preset_sequence_list;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +48,7 @@ public class MsterControl extends Activity {
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			y = 0;
+
 			for (i = 0; i < maxModCount; i++) {
 				TextView lable = new TextView(this);
 				lable.setText(mod_name_list[i]);
@@ -57,7 +68,7 @@ public class MsterControl extends Activity {
 						tb.setEnabled(false);
 					}
 					y++;
-				
+
 					tb.setOnClickListener(new View.OnClickListener() {
 
 						@Override
@@ -71,30 +82,36 @@ public class MsterControl extends Activity {
 									state = 0;
 							}
 							switchToggledRoutine(id, state);
-							loadStates();
+							refreshStatesToView();
 						}
 					});
 					panel.addView(tb);
 				}
 				space.addView(panel);
-				
+
 			}
-			loadStates();
+
+			FragmentManager manager = getFragmentManager();
+			TestFrag.mc = this;
+			Fragment frag = new TestFrag();
+			FragmentTransaction transaction = manager.beginTransaction();
+			transaction.add(R.id.body, frag).commit();
+
+			refreshStatesToView();
 		} catch (Exception e) {
 			Dialog d = new Dialog(this);
 			d.setTitle("onCreate(Bundle savedInstanceState)");
 			TextView tv = new TextView(this);
-			tv.setText("ERROR :" + e + "\n" + "maxModCount:" + maxModCount
-					+ "\n" + "i:" + i + "\n" + "j:" + j + "\n" + "y:" + y
-					+ "\n" + "switch_state_list[y]:"
-					+ switch_state_list[y] + "\n");
+			tv.setText(e + "\n" + "maxModCount:" + maxModCount + "\n" + "i:"
+					+ i + "\n" + "j:" + j + "\n" + "y:" + y + "\n"
+					+ "switch_state_list[y]:" + switch_state_list[y] + "\n");
 			d.setContentView(tv);
 			d.show();
 		}
 
 	}
 
-	protected void loadStates() {
+	protected void refreshStatesToView() {
 		// TODO Auto-generated method stub
 		ourDatabase = entry.openSp();
 		int col = 0;
@@ -127,26 +144,18 @@ public class MsterControl extends Activity {
 		}
 	}
 
-	protected void switchToggledRoutine(int id, int state) {
+	static void switchToggledRoutine(int id, int state) {
 		// TODO Auto-generated method stub
 		try {
 			ourDatabase = entry.openSp();
 			ContentValues cv = new ContentValues();
 			cv.put("swstate", state);
-			new AlertDialog.Builder(MsterControl.this)
-					.setTitle("switchToggledRoutine")
-					.setMessage("id= " + id + "\n" + "state=" + state).show();
+
 			ourDatabase.update(CreateDb.DATABASE_TABLE2, cv, "_id = " + id,
 					null);
 			ourDatabase.close();
 		} catch (Exception e) {
-			Dialog d = new Dialog(this);
-			d.setTitle("switch_Toggled(int id, int c)");
-			TextView tv = new TextView(this);
-			tv.setText("ERROR :" + e);
 
-			d.setContentView(tv);
-			d.show();
 		}
 	}
 
@@ -204,11 +213,11 @@ public class MsterControl extends Activity {
 			col1 = c.getColumnIndex("seqn");
 			for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 				pull_data = pull_data + c.getString(col) + ",";
-				pull_data1 = pull_data1 + c.getString(col1) + ",";
+				pull_data1 = pull_data1 + c.getString(col1) + ":";
 			}
 			preset_name_list = pull_data.split(",");
 			pull_data.split(",");
-			preset_sequence_list = pull_data1.split(",");
+			preset_sequence_list = pull_data1.split(":");
 			entry.close();
 		} catch (Exception e) {
 		}
@@ -231,5 +240,30 @@ public class MsterControl extends Activity {
 			d.setContentView(tv);
 			d.show();
 		}
+	}
+
+	public void loadPresetRoutine(int position) {
+		// TODO Auto-generated method stub
+		// read the selected preset sequence from preset_sequence_list
+		String[] selc_seq = preset_sequence_list[position].split(",");
+		ContentValues cv = new ContentValues();
+		y = 1;
+		// change swstate colum in table 2 as per preset sequence
+		ourDatabase = entry.openSp();
+		for (i = 0; i < maxSwCount; i++) {
+			if (((ToggleButton) findViewById(i + 1)).isEnabled()) {
+				if (((i + 1) + "").equals(selc_seq[y])) {
+					cv.put("swstate", 1);
+					if (y < (selc_seq.length-1))
+						y++;
+				} else
+					cv.put("swstate", 0);
+				ourDatabase.update(CreateDb.DATABASE_TABLE2, cv, "_id = "
+						+ (i + 1), null);
+
+			}
+
+		}
+		ourDatabase.close();
 	}
 }

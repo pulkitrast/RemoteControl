@@ -22,7 +22,7 @@
         </activity>
         <activity
             android:name="com.sampleapp.remotecontrol.Addmod"
-            android:label="Add A Module" >
+            android:label="Setup New Module" >
             <intent-filter>
                 <action android:name="com.sampleapp.remotecontrol.ADDMOD" />
 
@@ -31,7 +31,7 @@
         </activity>
         <activity
             android:name="com.sampleapp.remotecontrol.Customerize"
-            android:label="Customerize" >
+            android:label="Preset Manager" >
             <intent-filter>
                 <action android:name="com.sampleapp.remotecontrol.CUSTOMERISE" />
 

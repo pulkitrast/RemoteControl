@@ -31,7 +31,7 @@ public class Customerize extends Activity {
 	String[] preset_list;
 	String[] preset_sequences;
 	String[] switch_states;
-	String preset_name = "", new_sequence = "";
+	String preset_name = "", new_sequence = "0";
 	SQLiteDatabase ourDatabase;
 	CreateDb entry;
 	SharedPreferences sh;
@@ -102,14 +102,10 @@ public class Customerize extends Activity {
 				space.addView(panel);
 			}
 		} catch (Exception e) {
-			Dialog d = new Dialog(Customerize.this);
-			d.setTitle("onCreate(Bundle savedInstanceState) !");
-			TextView tv = new TextView(Customerize.this);
-			tv.setText(e + "\n" + "i " + i + "\n" + "j " + j + "\n" + "y" + y
-					+ "\n" + "maxModCount " + maxModCount + "\n" + "maxSwCount"
-					+ maxSwCount);
-			d.setContentView(tv);
-			d.show();
+			message("onCreate(Bundle savedInstanceState) !", "\n" + "i " + i
+					+ "\n" + "j " + j + "\n" + "y" + y + "\n" + "maxModCount "
+					+ maxModCount + "\n" + "maxSwCount" + maxSwCount);
+
 		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 				Customerize.this, android.R.layout.simple_spinner_item,
@@ -120,8 +116,6 @@ public class Customerize extends Activity {
 
 	}
 
-	
-	
 	private void setListerners() {
 		// TODO Auto-generated method stub\
 		bt_edit.setOnClickListener(new View.OnClickListener() {
@@ -137,26 +131,29 @@ public class Customerize extends Activity {
 						.setMessage(
 								"preset name "
 										+ sp_preset_selector.getSelectedItem()
-												.toString() + "\n"
+												.toString()
+										+ "\n"
 										+ "preset sequence: "
-										+ Arrays.toString(sequence) + "\n"
-										+ "item position "+sp_preset_selector.getSelectedItemId()).show();
-				y = 0;
+										+ Arrays.toString(sequence)
+										+ "\n"
+										+ "item position "
+										+ sp_preset_selector
+												.getSelectedItemId()).show();
+				y = 1;
 				for (i = 0; i < maxSwCount; i++) {
 					t = (ToggleButton) findViewById(i + 1);
 					if (!t.isEnabled()) {
 						x[i] = 2;
 					}
-					if (((i + 1) + "").equals(sequence[y])) {
+					if (((i + 1)+"").equals(sequence[y])) {
 						x[i] = 1;
-						if (y < (sequence.length - 1))
+						if (y < (sequence.length-1))
 							y++;
 					} else
 						x[i] = 0;
-					
-					
+
 				}
-             loadCurrentSwitchState();
+				loadCurrentSwitchState();
 				et_preset_name.setEnabled(true);
 				et_preset_name.setFocusable(true);
 				et_preset_name.setVisibility(Visibility.MODE_IN);
@@ -180,21 +177,17 @@ public class Customerize extends Activity {
 									x[i] = 0;
 
 							}
-							new_sequence = "";
+							new_sequence = "0";
 							for (i = 0; i < maxSwCount; i++) {
 								if (x[i] == 1)
-									new_sequence = new_sequence + (i + 1) + ",";
+									new_sequence = new_sequence + "," + (i + 1);
 							}
 							int id = (int) sp_preset_selector
-									.getSelectedItemId()+1;
+									.getSelectedItemId() + 1;
 							preset_name = et_preset_name.getText().toString();
-							new AlertDialog.Builder(Customerize.this)
-									.setTitle("Saving preset")
-									.setMessage(
-											"preset name " + preset_name + "\n"
-													+ "preset sequence: "
-													+ new_sequence + "\n id="
-													+ id).show();
+							message("Saving preset", "preset name "
+									+ preset_name + "\n" + "preset sequence: "
+									+ new_sequence + "\n id=" + id);
 
 							ourDatabase = entry.openSp();
 							ContentValues cv = new ContentValues();
@@ -206,24 +199,16 @@ public class Customerize extends Activity {
 
 						} catch (Exception e) {
 
-							Dialog d = new Dialog(Customerize.this);
-							d.setTitle("bt_save.setOnClickListener(new View.OnClickListener()");
-							TextView tv = new TextView(Customerize.this);
-							tv.setText("Error" + e);
-							d.setContentView(tv);
-							d.show();
+							message("bt_save.setOnClickListener(new View.OnClickListener()",
+									"Error" + e);
+
 						}
 
-						Dialog d = new Dialog(Customerize.this);
-						d.setTitle("Preset saved!");
-						TextView tv = new TextView(Customerize.this);
-						tv.setText(" New preset: name " + preset_name
-								+ "\n sequence " + new_sequence);
-						d.setContentView(tv);
-						d.show();
+						message("Preset saved!", " New preset: name "
+								+ preset_name + "\n sequence " + new_sequence);
 
 						refresh();
-						}
+					}
 				});
 
 			}
@@ -235,9 +220,11 @@ public class Customerize extends Activity {
 			// ON Pressing new
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				et_preset_name.clearComposingText();
 				et_preset_name.setEnabled(true);
 				et_preset_name.setFocusable(true);
 				et_preset_name.setVisibility(Visibility.MODE_IN);
+				et_preset_name.requestFocus();
 				bt_save.setOnClickListener(new View.OnClickListener() {
 
 					@Override
@@ -245,8 +232,7 @@ public class Customerize extends Activity {
 						// ON Pressing Save after new
 						preset_name = et_preset_name.getText().toString();
 						if (!preset_name.isEmpty()) {
-							new_sequence = "";
-
+							// read buttons and store states in x[]
 							for (i = 0; i < maxSwCount; i++) {
 								ToggleButton t = (ToggleButton) findViewById(i + 1);
 								if (!t.isEnabled())
@@ -257,12 +243,13 @@ public class Customerize extends Activity {
 									x[i] = 0;
 
 							}
-							new_sequence = "";
+							// make new preset sequence from x[]
+							new_sequence = "0";
 							for (i = 0; i < maxSwCount; i++) {
 								if (x[i] == 1)
-									new_sequence = new_sequence + (i + 1) + ",";
+									new_sequence = new_sequence + "," + (i + 1);
 							}
-
+							// insert the new preset name and sequence in Db
 							ourDatabase = entry.openSp();
 							ContentValues cv;
 							cv = new ContentValues();
@@ -272,52 +259,51 @@ public class Customerize extends Activity {
 									cv);
 							ourDatabase.close();
 
-							Dialog d = new Dialog(Customerize.this);
-							d.setTitle("Preset saved!");
-							TextView tv = new TextView(Customerize.this);
-							tv.setText(" New preset: name " + preset_name
-									+ "\n sequence " + new_sequence);
-							d.setContentView(tv);
-							d.show();
+							message("bt_new onclick", " New preset: name "
+									+ preset_name + "\n sequence "
+									+ new_sequence);
+
 						} else {
-							Dialog d = new Dialog(Customerize.this);
-							d.setTitle("WARNING");
-							TextView tv = new TextView(Customerize.this);
-							tv.setText("Enter a vaild name for preset. ");
-							d.setContentView(tv);
-							d.show();
+							message("bt_new onclick",
+									"Enter a vaild name for preset. ");
+
 						}
-						refresh();}
+						refresh();
+					}
 				});
 			}
 		});
 
-	bt_delete.setOnClickListener(new View.OnClickListener() {
-		
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			int id=(int) sp_preset_selector.getSelectedItemId()+1;
-			if(id!=1){
-				ourDatabase=entry.openSp();
-				ourDatabase.delete(CreateDb.DATABASE_TABLE3, "_id = " + id, null);
-				ourDatabase.close();
-				refresh();
-		}}
-	});
+		bt_delete.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				int id = (int) sp_preset_selector.getSelectedItemId() + 1;
+				if (id != 1) {
+					ourDatabase = entry.openSp();
+					ourDatabase.delete(CreateDb.DATABASE_TABLE3, "_id = " + id,
+							null);
+					ourDatabase.close();
+					refresh();
+				}
+			}
+		});
 	}
+
 	protected void refresh() {
 		// TODO Auto-generated method stub
 		Intent intent = getIntent();
 		finish();
 		startActivity(intent);
 	}
+
 	protected void loadCurrentSwitchState() {
-		// TODO Auto-generated method stub
+		// set switch states to x[]
 		for (i = 1; i <= maxSwCount; i++) {
-			ToggleButton	t = (ToggleButton) findViewById(i);
-			
-			switch (x[i-1]) {
+			ToggleButton t = (ToggleButton) findViewById(i);
+
+			switch (x[i - 1]) {
 			case 1:
 				t.setChecked(true);
 				break;
@@ -325,8 +311,9 @@ public class Customerize extends Activity {
 				t.setChecked(false);
 				break;
 			}
+		}
 	}
-	}
+
 	private void init() {
 
 		bt_save = (Button) findViewById(R.id.btsave);
@@ -339,7 +326,11 @@ public class Customerize extends Activity {
 		sh = getSharedPreferences("myprefs", 0);
 		maxModCount = sh.getInt("size", 1);
 		maxSwCount = maxModCount * 5;
+		final ToggleButton NULL = new ToggleButton(this);
+		NULL.setChecked(true);
+		NULL.setId(0);
 	}
+
 	private void loadTableData() {
 		// TODO Auto-generated method stub
 		try {
@@ -377,16 +368,21 @@ public class Customerize extends Activity {
 			ourDatabase.close();
 
 		} catch (Exception e) {
-			Dialog d = new Dialog(Customerize.this);
-			d.setTitle("loadTableData()");
-			TextView tv = new TextView(Customerize.this);
-			tv.setText("error:" + e + "\n" + "preset_list"
+			message("loadTableData()", "error:" + e + "\n" + "preset_list"
 					+ Arrays.toString(preset_list) + "\n" + "preset_sequences"
 					+ Arrays.toString(preset_sequences) + "\n"
 					+ "switch_states" + Arrays.toString(switch_states) + "\n"
 					+ "maxModCount" + maxModCount + "\n");
-			d.setContentView(tv);
-			d.show();
+
 		}
+	}
+
+	private void message(String title, String body) {
+		Dialog d = new Dialog(Customerize.this);
+		d.setTitle(title);
+		TextView tv = new TextView(Customerize.this);
+		tv.setText(body);
+		d.setContentView(tv);
+		d.show();
 	}
 }
